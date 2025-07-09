@@ -5,6 +5,8 @@ type Book {
   authorId: Int!
   author: Author!
   summary: String
+  reviews:[Review]
+  genre:[Genre]
 }
 
 type Author {
@@ -16,6 +18,8 @@ type Author {
 type Query {
   books: [Book!]!
   authors: [Author!]!
+  reviews: [Review!]!
+  genres: [Genre!]!
   book(id: Int!): Book
   author(id: Int!): Author
   booksByAuthor(id: Int!): [Book!]!
@@ -44,3 +48,5 @@ type Review {
 export type Book = { id: number; title: string; authorId: number };
 export type Author = { id: number; name: string };
 export type AddBookArgs = { title: string; authorId: number; id: number };
+export type Review = { id: number; bookId: number; rating: number; comment: string };
+export type Genre = { id: number; name: string; bookId: number };

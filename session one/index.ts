@@ -1,27 +1,16 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs, type AddBookArgs, type Author, type Book } from './typeDefs.ts';
-
-const books: Book[] = [
-  { id: 1, title: 'The Awakening', authorId: 101 },
-  { id: 2, title: 'The Secret Garden', authorId: 102 },
-  { id: 3, title: 'Gone with the Wind', authorId: 103 },
-  { id: 4, title: 'Harry Potter', authorId: 102 },
-];
-
-const authors: Author[] = [
-  { id: 101, name: 'Jane Austen' },
-  { id: 102, name: 'J.K. Rowling' },
-  { id: 103, name: 'Margaret Mitchell' },
-];
+import { typeDefs, type Author, type Book, type Genre, type Review } from './typeDefs.ts';
+import { authors, books, genres, reviews } from './data.ts';
 
 const resolvers = {
   Query: {
     books: () => books.slice().sort((a, b) => a.title.localeCompare(b.title)),
     authors: () => authors,
+    reviews: () => reviews,
+    genres: () => genres,
     book: (_: unknown, args: { id: number }) => books.find(b => b.id === args.id) || null,
-    booksByAuthor: (_: unknown, args: { id: number }) =>
-      books.filter(b => b.authorId === args.id),
+    booksByAuthor: (_: unknown, args: { id: number }) => books.filter(b => b.authorId === args.id),
   },
 
   Book: {
@@ -30,10 +19,31 @@ const resolvers = {
       const author = authors.find(a => a.id === book.authorId);
       return author ? `${book.title} by ${author.name}` : book.title;
     },
+    reviews: (book: Book) => {
+      const review = reviews.filter(r => {
+        return r.bookId === book.id;
+      });
+      return review;
+    },
+    genre: (book: Book) => {
+      const genre = genres.filter(g => {
+        return g.bookId === book.id;
+      });
+      console.log(genre);
+      return genre;
+    },
   },
 
   Author: {
     books: (author: Author) => books.filter(b => b.authorId === author.id),
+  },
+
+  Review: {
+    book: (review: Review) => books.find(b => b.id === review.bookId),
+  },
+
+  Genre: {
+    books: (genre: Genre) => books.filter(b => b.id === genre.bookId),
   },
 
   Mutation: {
