@@ -5,6 +5,7 @@ type  User {
   name: String!
   email: String!
   watchlist:[Movie!]!
+  reviews:[Review!]
 }
 
 type Movie {
@@ -35,6 +36,7 @@ type Query {
   movies:[Movie!]!
   users:[User!]!
   genres:[Genre!]!
+  reviews:[Review!]
 }
 
 `;
